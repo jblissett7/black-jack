@@ -5,7 +5,17 @@ import Card from './../Card/Card';
 
 describe('Dealer', () => {
   let wrapper;
-  beforeEach(() => (wrapper = shallow(<Dealer cards={['Ace of Clubs']} />)));
+  beforeEach(
+    () =>
+      (wrapper = shallow(
+        <Dealer
+          cards={[
+            { name: 'Ace of Clubs', value: 1 },
+            { name: '3 of Clubs', value: 3 },
+          ]}
+        />
+      ))
+  );
 
   it('Should render a <div />', () => {
     expect(wrapper.find('div').length).toEqual(1);

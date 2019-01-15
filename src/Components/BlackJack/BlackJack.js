@@ -18,13 +18,15 @@ class BlackJack extends Component {
 
   deal = () => {
     let updatedDeck = this.state.deck;
-    let { dealerCards, playerCards } = this.state;
+    let { dealerCards, playerCards, dealerCount, playerCount } = this.state;
     updatedDeck.shuffle();
     //console.log(updatedDeck);
     playerCards.push(updatedDeck.dealCard());
     dealerCards.push(updatedDeck.dealCard());
     playerCards.push(updatedDeck.dealCard());
     dealerCards.push(updatedDeck.dealCard());
+    dealerCount = this.getCount(dealerCards);
+    playerCount = this.getCount(playerCards);
     //console.log(playerCards);
     //console.log(dealerCards);
     //console.log(updatedDeck);
@@ -33,7 +35,17 @@ class BlackJack extends Component {
       deck: updatedDeck,
       dealerCards,
       playerCards,
+      dealerCount,
+      playerCount,
     });
+  };
+
+  getCount = cards => {
+    let count = 0;
+    cards.forEach(card => {
+      count += card.value;
+    });
+    return count;
   };
 
   componentDidMount() {
@@ -41,11 +53,11 @@ class BlackJack extends Component {
   }
 
   render() {
-    const { dealerCards, playerCards } = this.state;
+    const { dealerCards, playerCards, dealerCount, playerCount } = this.state;
     return (
       <div>
-        <Dealer cards={dealerCards} />
-        <Player cards={playerCards} />
+        <Dealer cards={dealerCards} count={dealerCount} />
+        <Player cards={playerCards} count={playerCount} />
       </div>
     );
   }
