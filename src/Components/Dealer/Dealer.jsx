@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Card from '../Card/Card';
 
-class Player extends Component {
+class Dealer extends Component {
   count = () => {
     let count = 0;
     this.props.cards.forEach(card => {
@@ -22,4 +22,4 @@ class Player extends Component {
   }
 }
 
-export default Player;
+export default Dealer;
