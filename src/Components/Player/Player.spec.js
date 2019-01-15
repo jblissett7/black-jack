@@ -6,7 +6,16 @@ import Card from './../Card/Card';
 describe('Player', () => {
   let wrapper;
   beforeEach(
-    () => (wrapper = shallow(<Player cards={['Jack of Diamonds']} />))
+    () =>
+      (wrapper = shallow(
+        <Player
+          cards={[
+            { name: 'Jack of Diamonds', value: 10 },
+            { name: 'Queen of Hearts', value: 10 },
+          ]}
+          count={20}
+        />
+      ))
   );
 
   it('Should render a <div />', () => {
