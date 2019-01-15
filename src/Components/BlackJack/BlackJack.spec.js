@@ -42,16 +42,6 @@ describe('BlackJack', () => {
     expect(wrapper.state('dealerCards').length).toEqual(2);
     expect(wrapper.state('playerCards').length).toEqual(2);
   });
-
-  it('Should correctly add up card count', () => {
-    wrapper.setState({
-      dealerCards: [
-        { name: '2 of Hearts', value: 2 },
-        { name: '9 of Clubs', value: 9 },
-      ],
-    });
-    expect(wrapper.instance().getCount(wrapper.state('dealerCards'))).toBe(11);
-  });
 });
 
 describe('Mounted BlackJack Component', () => {
@@ -88,6 +78,63 @@ describe('Mounted BlackJack Component', () => {
   });
 });
 
+describe('getCount', () => {
+  let wrapper, shallow;
+  beforeEach(() => {
+    shallow = createShallow();
+    wrapper = shallow(<BlackJack />);
+  });
+
+  it('Should add up count with number cards', () => {
+    const cards = [
+      { name: '2 of Hearts', value: 2 },
+      { name: '9 of Clubs', value: 9 },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(11);
+  });
+
+  it('Should calculate count with face cards', () => {
+    const cards = [
+      { name: 'King of Hearts', value: 10 },
+      { name: '9 of Clubs', value: 9 },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(19);
+  });
+
+  it('Should calculate count with ace as first card', () => {
+    const cards = [
+      { name: 'Ace of Hearts', value: 'Ace' },
+      { name: '9 of Clubs', value: 9 },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(20);
+  });
+
+  it('Should calculate count with ace as last card', () => {
+    const cards = [
+      { name: 'King of Hearts', value: 10 },
+      { name: 'Ace of Clubs', value: 'Ace' },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(21);
+  });
+
+  it('Should calculate count with two aces', () => {
+    const cards = [
+      { name: 'Ace of Hearts', value: 'Ace' },
+      { name: 'Ace of Clubs', value: 'Ace' },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(12);
+  });
+
+  it('Should calculate count with one ace and two other cards', () => {
+    const cards = [
+      { name: 'Ace of Hearts', value: 'Ace' },
+      { name: '5 of Clubs', value: 5 },
+      { name: '3 of Clubs', value: 3 },
+    ];
+    expect(wrapper.instance().getCount(cards)).toBe(19);
+  });
+});
+
 describe('HandleHitButtonClick', () => {
   let wrapper, shallow;
   beforeEach(() => {
@@ -103,5 +150,30 @@ describe('HandleHitButtonClick', () => {
   it('Should decrease deck size by one', () => {
     wrapper.instance().handleHitButtonClick();
     expect(wrapper.state('deck').deck.length).toEqual(47);
+  });
+});
+
+describe('HandleStandButtonClick', () => {
+  let wrapper, shallow;
+  beforeEach(() => {
+    shallow = createShallow();
+    wrapper = shallow(<BlackJack />);
+  });
+
+  it('Should not add a card to dealerCards if dealerCount is 17 or higher', () => {
+    wrapper.setState({ dealerCount: 17 });
+    wrapper.instance().handleStandButtonClick();
+    expect(wrapper.state('dealerCards').length).toEqual(2);
+  });
+
+  it('Should add a card to dealerCards', () => {
+    wrapper.setState({ dealerCount: 16 });
+    wrapper.instance().handleStandButtonClick();
+    expect(wrapper.state('dealerCards').length).toBeGreaterThan(2);
+  });
+
+  it('Should decrease deck size by one', () => {
+    wrapper.instance().handleStandButtonClick();
+    expect(wrapper.state('deck').deck.length).toBeLessThan(48);
   });
 });

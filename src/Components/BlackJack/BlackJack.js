@@ -32,7 +32,20 @@ class BlackJack extends Component {
     });
   };
 
-  handleStandButtonClick = () => {};
+  handleStandButtonClick = () => {
+    let updatedDeck = this.state.deck;
+    let { dealerCards, dealerCount } = this.state;
+    while (dealerCount < 17) {
+      dealerCards.push(updatedDeck.dealCard());
+      dealerCount = this.getCount(dealerCards);
+
+      this.setState({
+        deck: updatedDeck,
+        dealerCards,
+        dealerCount,
+      });
+    }
+  };
 
   startingDeal = () => {
     let updatedDeck = this.state.deck;
@@ -55,10 +68,26 @@ class BlackJack extends Component {
   };
 
   getCount = cards => {
-    let count = 0;
+    // Need to put Aces at the end of the array to make it easier to calculate
+    // if the Ace should be valued at 1 or 11
+    const sortedCards = [];
     cards.forEach(card => {
-      count += card.value;
+      if (card.value === 'Ace') {
+        sortedCards.push(card);
+      } else {
+        // unshift puts all other cards in front of any aces
+        sortedCards.unshift(card);
+      }
     });
+
+    let count = sortedCards.reduce((total, card) => {
+      if (card.value === 'Ace') {
+        // add ace value that gets you closest to 21 without busting.
+        return total + 11 <= 21 ? total + 11 : total + 1;
+      } else {
+        return total + card.value;
+      }
+    }, 0);
     return count;
   };
 
