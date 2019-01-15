@@ -3,6 +3,7 @@ import Player from '../../Components/Player/Player';
 import Dealer from '../../Components/Dealer/Dealer';
 import Deck from './../../Utilities/Deck';
 import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
 
 class GameContainer extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class GameContainer extends Component {
 
     this.state = {
       deck: new Deck(),
+      //hiddenDealerCard: [],
       dealerCards: [],
       dealerCount: 0,
       playerCards: [],
@@ -22,6 +24,9 @@ class GameContainer extends Component {
     let { playerCards, playerCount } = this.state;
     playerCards.push(updatedDeck.dealCard());
     playerCount = this.getCount(playerCards);
+    if (playerCount > 21) {
+      console.log('Bust');
+    }
 
     this.setState({
       deck: updatedDeck,
@@ -33,6 +38,7 @@ class GameContainer extends Component {
   handleStandButtonClick = () => {
     let updatedDeck = this.state.deck;
     let { dealerCards, dealerCount } = this.state;
+    //this.flipHiddenCard();
     while (dealerCount < 17) {
       dealerCards.push(updatedDeck.dealCard());
       dealerCount = this.getCount(dealerCards);
@@ -45,9 +51,29 @@ class GameContainer extends Component {
     }
   };
 
+  /*flipHiddenCard = () => {
+    let { dealerCards, dealerCount, hiddenDealerCard } = this.state;
+    dealerCards.push(hiddenDealerCard);
+    console.log(hiddenDealerCard);
+    dealerCount = this.getCount(dealerCards);
+
+    this.setState({
+      dealerCards,
+      dealerCount,
+      hiddenDealerCard: [],
+    });
+  };
+  */
+
   startingDeal = () => {
     let updatedDeck = this.state.deck;
-    let { dealerCards, playerCards, dealerCount, playerCount } = this.state;
+    let {
+      dealerCards,
+      playerCards,
+      dealerCount,
+      playerCount,
+      hiddenDealerCard,
+    } = this.state;
     updatedDeck.shuffle();
     playerCards.push(updatedDeck.dealCard());
     dealerCards.push(updatedDeck.dealCard());
@@ -60,6 +86,7 @@ class GameContainer extends Component {
       deck: updatedDeck,
       dealerCards,
       playerCards,
+      //hiddenDealerCard,
       dealerCount,
       playerCount,
     });
@@ -94,12 +121,14 @@ class GameContainer extends Component {
   }
   render() {
     const { dealerCards, playerCards, dealerCount, playerCount } = this.state;
+    const { wallet } = this.props;
     return (
       <div>
         <Dealer cards={dealerCards} count={dealerCount} />
         <Player cards={playerCards} count={playerCount} />
         <Button onClick={this.handleHitButtonClick}>Hit</Button>
         <Button onClick={this.handleStandButtonClick}>Stand</Button>
+        <Typography variant="h3">${wallet}</Typography>
       </div>
     );
   }

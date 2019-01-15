@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import App from './App';
-import BlackJack from './../BlackJack/BlackJack';
+import BlackJackContainer from '../../Containers/BlackJack/BlackJackContainer';
 
 describe('App', () => {
   let wrapper;
@@ -11,7 +11,9 @@ describe('App', () => {
     expect(wrapper.find('div').length).toEqual(1);
   });
 
-  it('Should render the BlackJack Component', () => {
-    expect(wrapper.containsMatchingElement(<BlackJack />)).toEqual(true);
+  it('Should render the BlackJackContainer Component', () => {
+    expect(wrapper.containsMatchingElement(<BlackJackContainer />)).toEqual(
+      true
+    );
   });
 });

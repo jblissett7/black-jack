@@ -6,8 +6,8 @@ class Dealer extends Component {
     const { cards, count } = this.props;
     return (
       <div>
-        {cards.map(card => (
-          <Card name={card.name} key={card.name} value={card.value} />
+        {cards.map((card, index) => (
+          <Card name={card.name} key={index} value={card.value} />
         ))}
         <h3>{count}</h3>
       </div>

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import BlackJack from '../BlackJack/BlackJack';
+import BlackJackContainer from '../../Containers/BlackJack/BlackJackContainer';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <BlackJack />
+        <BlackJackContainer />
       </div>
     );
   }
