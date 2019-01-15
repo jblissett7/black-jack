@@ -2,12 +2,26 @@ class Deck {
   constructor() {
     this.deck = [];
 
-    const values = ['Ace', 1, 2, 3, 4, 5, 6, 7, 8, 9, 'J', 'Q', 'K'];
+    const values = ['Ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King'];
     const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
     for (let value in values) {
       for (let suit in suits) {
-        this.deck.push(`${values[value]} of ${suits[suit]}`);
+        if (
+          values[value] === 'Jack' ||
+          values[value] === 'Queen' ||
+          values[value] === 'King'
+        ) {
+          this.deck.push({
+            name: `${values[value]} of ${suits[suit]}`,
+            value: 10,
+          });
+        } else {
+          this.deck.push({
+            name: `${values[value]} of ${suits[suit]}`,
+            value: values[value],
+          });
+        }
       }
     }
   }

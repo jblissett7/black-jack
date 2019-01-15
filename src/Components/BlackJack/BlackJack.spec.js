@@ -13,7 +13,11 @@ describe('BlackJack', () => {
   });
 
   it('Should render a Dealer Component', () => {
-    expect(wrapper.containsMatchingElement(<Dealer />)).toEqual(true);
+    expect(
+      wrapper.containsMatchingElement(
+        <Dealer cards={wrapper.instance().state.dealerCards} />
+      )
+    ).toEqual(true);
   });
 
   it('Should render the Player Component', () => {

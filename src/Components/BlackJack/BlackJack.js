@@ -16,11 +16,36 @@ class BlackJack extends Component {
     };
   }
 
+  deal = () => {
+    let updatedDeck = this.state.deck;
+    let { dealerCards, playerCards } = this.state;
+    updatedDeck.shuffle();
+    //console.log(updatedDeck);
+    playerCards.push(updatedDeck.dealCard());
+    dealerCards.push(updatedDeck.dealCard());
+    playerCards.push(updatedDeck.dealCard());
+    dealerCards.push(updatedDeck.dealCard());
+    //console.log(playerCards);
+    //console.log(dealerCards);
+    //console.log(updatedDeck);
+
+    this.setState({
+      deck: updatedDeck,
+      dealerCards,
+      playerCards,
+    });
+  };
+
+  componentDidMount() {
+    this.deal();
+  }
+
   render() {
+    const { dealerCards, playerCards } = this.state;
     return (
       <div>
-        <Dealer />
-        <Player />
+        <Dealer cards={dealerCards} />
+        <Player cards={playerCards} />
       </div>
     );
   }
