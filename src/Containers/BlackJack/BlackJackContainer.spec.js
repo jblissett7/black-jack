@@ -78,3 +78,35 @@ describe('handleClick', () => {
     expect(wrapper.state('gameOver')).toBe(false);
   });
 });
+
+describe('handleGameOver', () => {
+  let wrapper, shallow;
+  beforeEach(() => {
+    shallow = createShallow();
+    wrapper = shallow(<BlackJackContainer />);
+  });
+
+  it('Should add money to wallet and end game if player won', () => {
+    wrapper.setState({ betAmount: 30 });
+    wrapper.instance().handleGameOver('Player');
+    expect(wrapper.state('wallet')).toBe(1060);
+    expect(wrapper.state('message')).toBe('You Won!');
+    expect(wrapper.state('gameOver')).toBe(true);
+  });
+
+  it('Should print message and end game if player lost', () => {
+    wrapper.setState({ betAmount: 30 });
+    wrapper.instance().handleGameOver('Dealer');
+    expect(wrapper.state('wallet')).toBe(1000);
+    expect(wrapper.state('message')).toBe('You lost');
+    expect(wrapper.state('gameOver')).toBe(true);
+  });
+
+  it('Should print message and give money back if push', () => {
+    wrapper.setState({ betAmount: 30 });
+    wrapper.instance().handleGameOver('Push');
+    expect(wrapper.state('wallet')).toBe(1030);
+    expect(wrapper.state('message')).toBe('Push');
+    expect(wrapper.state('gameOver')).toBe(true);
+  });
+});

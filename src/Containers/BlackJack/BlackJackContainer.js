@@ -35,6 +35,30 @@ class BlackJackContainer extends Component {
     }
   };
 
+  handleGameOver = winner => {
+    let { wallet, betAmount } = this.state;
+    if (winner === 'Player') {
+      wallet += betAmount * 2;
+      this.setState({
+        wallet,
+        message: 'You Won!',
+        gameOver: true,
+      });
+    } else if (winner === 'Dealer') {
+      this.setState({
+        message: 'You lost',
+        gameOver: true,
+      });
+    } else {
+      wallet += betAmount;
+      this.setState({
+        wallet,
+        message: 'Push',
+        gameOver: true,
+      });
+    }
+  };
+
   render() {
     const { gameOver, wallet, betAmount } = this.state;
     return (
@@ -47,7 +71,7 @@ class BlackJackContainer extends Component {
             onBetClick={this.handleClick}
           />
         ) : (
-          <GameContainer wallet={wallet} />
+          <GameContainer wallet={wallet} onWinner={this.handleGameOver} />
         )}
       </div>
     );

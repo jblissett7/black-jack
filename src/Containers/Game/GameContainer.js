@@ -24,15 +24,17 @@ class GameContainer extends Component {
     let { playerCards, playerCount } = this.state;
     playerCards.push(updatedDeck.dealCard());
     playerCount = this.getCount(playerCards);
-    if (playerCount > 21) {
+    /*if (playerCount > 21) {
       console.log('Bust');
     }
+    */
 
     this.setState({
       deck: updatedDeck,
       playerCards,
       playerCount,
     });
+    console.log('here');
   };
 
   handleStandButtonClick = () => {
@@ -45,7 +47,7 @@ class GameContainer extends Component {
     }
 
     if (dealerCount > 21) {
-      this.props.gameOver('Player');
+      //this.props.onWinner('Player');
     }
 
     this.setState({
