@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import GameContainer from '../Game/GameContainer';
 import StartContainer from '../Start/StartContainer';
+import Deck from '../../Utilities/Deck';
 
 class BlackJackContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      deck: new Deck().shuffle(),
       wallet: 1000,
       betAmount: null,
       gameOver: true,
@@ -39,18 +41,21 @@ class BlackJackContainer extends Component {
     let { wallet, betAmount } = this.state;
     if (winner === 'Player') {
       wallet += betAmount * 2;
+      console.log('won');
       this.setState({
         wallet,
         message: 'You Won!',
         gameOver: true,
       });
     } else if (winner === 'Dealer') {
+      console.log('lost');
       this.setState({
         message: 'You lost',
         gameOver: true,
       });
     } else {
       wallet += betAmount;
+      console.log('push');
       this.setState({
         wallet,
         message: 'Push',
@@ -60,7 +65,7 @@ class BlackJackContainer extends Component {
   };
 
   render() {
-    const { gameOver, wallet, betAmount } = this.state;
+    const { gameOver, wallet, betAmount, deck } = this.state;
     return (
       <div>
         {gameOver ? (
@@ -71,7 +76,11 @@ class BlackJackContainer extends Component {
             onBetClick={this.handleClick}
           />
         ) : (
-          <GameContainer wallet={wallet} onWinner={this.handleGameOver} />
+          <GameContainer
+            deck={deck}
+            wallet={wallet}
+            onWinner={this.handleGameOver}
+          />
         )}
       </div>
     );

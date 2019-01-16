@@ -10,8 +10,8 @@ describe('Dealer', () => {
       (wrapper = shallow(
         <Dealer
           cards={[
-            { name: 'Ace of Clubs', value: 1 },
-            { name: '3 of Clubs', value: 3 },
+            { card: { name: 'Ace of Clubs', value: 1 }, facedown: false },
+            { card: { name: '3 of Clubs', value: 3 }, facedown: false },
           ]}
         />
       ))

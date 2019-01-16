@@ -10,51 +10,56 @@ class GameContainer extends Component {
     super(props);
 
     this.state = {
-      deck: new Deck(),
       //hiddenDealerCard: [],
-      dealerCards: [],
+      dealerCards: [{ card: '', facedown: false }],
       dealerCount: 0,
-      playerCards: [],
+      playerCards: [{ card: '', facedown: false }],
       playerCount: 0,
     };
   }
 
   handleHitButtonClick = () => {
-    let updatedDeck = this.state.deck;
+    let { deck } = this.props;
     let { playerCards, playerCount } = this.state;
-    playerCards.push(updatedDeck.dealCard());
+    playerCards.push({ card: deck.dealCard() });
     playerCount = this.getCount(playerCards);
-    /*if (playerCount > 21) {
+    if (playerCount > 21) {
       console.log('Bust');
+      this.props.onWinner('Dealer');
+    } else {
+      this.setState({
+        playerCards,
+        playerCount,
+      });
     }
-    */
-
-    this.setState({
-      deck: updatedDeck,
-      playerCards,
-      playerCount,
-    });
-    console.log('here');
   };
 
   handleStandButtonClick = () => {
-    let updatedDeck = this.state.deck;
+    let { deck } = this.props;
     let { dealerCards, dealerCount } = this.state;
-    //this.flipHiddenCard();
+    dealerCards[0].facedown = false;
+    dealerCount = this.getCount(dealerCards);
+    console.log(dealerCount);
     while (dealerCount < 17) {
-      dealerCards.push(updatedDeck.dealCard());
+      dealerCards.push({ card: deck.dealCard() });
       dealerCount = this.getCount(dealerCards);
+      console.log(dealerCount);
     }
+    this.setState(
+      {
+        dealerCards,
+        dealerCount,
+      },
+      this.checkDealerCount(dealerCount)
+    );
+  };
 
+  checkDealerCount = dealerCount => {
     if (dealerCount > 21) {
-      //this.props.onWinner('Player');
+      this.props.onWinner('Player');
+    } else {
+      this.props.onWinner(this.getWinner());
     }
-
-    this.setState({
-      deck: updatedDeck,
-      dealerCards,
-      dealerCount,
-    });
   };
 
   /*flipHiddenCard = () => {
@@ -72,7 +77,8 @@ class GameContainer extends Component {
   */
 
   startingDeal = () => {
-    let updatedDeck = this.state.deck;
+    //let updatedDeck = this.state.deck;
+    let { deck } = this.props;
     let {
       dealerCards,
       playerCards,
@@ -80,16 +86,16 @@ class GameContainer extends Component {
       playerCount,
       //hiddenDealerCard,
     } = this.state;
-    updatedDeck.shuffle();
-    playerCards.push(updatedDeck.dealCard());
-    dealerCards.push(updatedDeck.dealCard());
-    playerCards.push(updatedDeck.dealCard());
-    dealerCards.push(updatedDeck.dealCard());
+    //updatedDeck.shuffle();
+    playerCards[0] = { card: deck.dealCard(), facedown: false };
+    dealerCards[0] = { card: deck.dealCard(), facedown: true };
+    playerCards.push({ card: deck.dealCard() });
+    dealerCards.push({ card: deck.dealCard() });
     dealerCount = this.getCount(dealerCards);
     playerCount = this.getCount(playerCards);
 
     this.setState({
-      deck: updatedDeck,
+      //deck: updatedDeck,
       dealerCards,
       playerCards,
       //hiddenDealerCard,
@@ -103,7 +109,7 @@ class GameContainer extends Component {
     // if the Ace should be valued at 1 or 11
     const sortedCards = [];
     cards.forEach(card => {
-      if (card.value === 'Ace') {
+      if (card.card.value === 'Ace') {
         sortedCards.push(card);
       } else {
         // unshift puts all other cards in front of any aces
@@ -112,11 +118,16 @@ class GameContainer extends Component {
     });
 
     let count = sortedCards.reduce((total, card) => {
-      if (card.value === 'Ace') {
-        // add ace value that gets you closest to 21 without busting.
-        return total + 11 <= 21 ? total + 11 : total + 1;
+      // if card is facedown dont add it to the count
+      if (!card.facedown) {
+        if (card.card.value === 'Ace') {
+          // add ace value that gets you closest to 21 without busting.
+          return total + 11 <= 21 ? total + 11 : total + 1;
+        } else {
+          return total + card.card.value;
+        }
       } else {
-        return total + card.value;
+        return total;
       }
     }, 0);
     return count;
@@ -125,11 +136,11 @@ class GameContainer extends Component {
   getWinner = () => {
     const { playerCount, dealerCount } = this.state;
     if (playerCount > dealerCount) {
-      return 'player';
+      return 'Player';
     } else if (dealerCount > playerCount) {
-      return 'dealer';
+      return 'Dealer';
     } else {
-      return 'push';
+      return 'Push';
     }
   };
 

@@ -10,8 +10,8 @@ describe('Player', () => {
       (wrapper = shallow(
         <Player
           cards={[
-            { name: 'Jack of Diamonds', value: 10 },
-            { name: 'Queen of Hearts', value: 10 },
+            { card: { name: 'Ace of Clubs', value: 1 }, facedown: false },
+            { card: { name: '3 of Clubs', value: 3 }, facedown: false },
           ]}
           count={20}
         />
