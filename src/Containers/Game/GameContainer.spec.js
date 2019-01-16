@@ -164,6 +164,13 @@ describe('HandleStandButtonClick', () => {
     expect(wrapper.state('dealerCards').length).toEqual(2);
   });
 
+  it('Should correctly bust the dealer', () => {
+    wrapper.setState({ dealerCount: 22 });
+    wrapper.instance().handleStandButtonClick();
+    expect(wrapper.props('message')).toBe('Dealer bust');
+    expect(wrapper.props('winner')).toBe('Player');
+  });
+
   it('Should add a card to dealerCards', () => {
     wrapper.setState({ dealerCount: 16 });
     wrapper.instance().handleStandButtonClick();
@@ -171,6 +178,7 @@ describe('HandleStandButtonClick', () => {
   });
 
   it('Should decrease deck size by one', () => {
+    wrapper.setState({ dealerCount: 16 });
     wrapper.instance().handleStandButtonClick();
     expect(wrapper.state('deck').deck.length).toBeLessThan(48);
   });

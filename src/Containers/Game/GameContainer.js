@@ -42,13 +42,17 @@ class GameContainer extends Component {
     while (dealerCount < 17) {
       dealerCards.push(updatedDeck.dealCard());
       dealerCount = this.getCount(dealerCards);
-
-      this.setState({
-        deck: updatedDeck,
-        dealerCards,
-        dealerCount,
-      });
     }
+
+    if (dealerCount > 21) {
+      this.props.gameOver('Player');
+    }
+
+    this.setState({
+      deck: updatedDeck,
+      dealerCards,
+      dealerCount,
+    });
   };
 
   /*flipHiddenCard = () => {
