@@ -8,8 +8,9 @@ class BlackJackContainer extends Component {
 
     this.state = {
       wallet: 1000,
-      betAmount: 0,
+      betAmount: null,
       gameOver: true,
+      message: '',
     };
   }
 
@@ -22,7 +23,9 @@ class BlackJackContainer extends Component {
   handleClick = () => {
     let { betAmount, wallet } = this.state;
     if (betAmount > wallet) {
-      return;
+      this.setState({
+        message: 'You do not have sufficent funds.',
+      });
     } else {
       wallet = wallet - betAmount;
       this.setState({
