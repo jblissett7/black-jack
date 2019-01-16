@@ -72,7 +72,7 @@ class GameContainer extends Component {
       playerCards,
       dealerCount,
       playerCount,
-      hiddenDealerCard,
+      //hiddenDealerCard,
     } = this.state;
     updatedDeck.shuffle();
     playerCards.push(updatedDeck.dealCard());
@@ -114,6 +114,17 @@ class GameContainer extends Component {
       }
     }, 0);
     return count;
+  };
+
+  getWinner = () => {
+    const { playerCount, dealerCount } = this.state;
+    if (playerCount > dealerCount) {
+      return 'player';
+    } else if (dealerCount > playerCount) {
+      return 'dealer';
+    } else {
+      return 'push';
+    }
   };
 
   componentDidMount() {

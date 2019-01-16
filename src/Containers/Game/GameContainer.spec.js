@@ -175,3 +175,26 @@ describe('HandleStandButtonClick', () => {
     expect(wrapper.state('deck').deck.length).toBeLessThan(48);
   });
 });
+
+describe('getWinner', () => {
+  let wrapper, shallow;
+  beforeEach(() => {
+    shallow = createShallow();
+    wrapper = shallow(<GameContainer />);
+  });
+
+  it('Should return player if player wins', () => {
+    wrapper.setState({ dealerCount: 18, playerCount: 20 });
+    expect(wrapper.instance().getWinner()).toBe('player');
+  });
+
+  it('Should return dealer if dealer wins', () => {
+    wrapper.setState({ dealerCount: 20, playerCount: 18 });
+    expect(wrapper.instance().getWinner()).toBe('dealer');
+  });
+
+  it('Should return push if no one wins', () => {
+    wrapper.setState({ dealerCount: 20, playerCount: 20 });
+    expect(wrapper.instance().getWinner()).toBe('push');
+  });
+});
