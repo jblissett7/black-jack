@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import MyCard from '../MyCard/MyCard';
+import Typography from '@material-ui/core/Typography';
 
-class Dealer extends Component {
+class Hand extends Component {
   render() {
-    const { cards, count } = this.props;
+    const { cards, count, name } = this.props;
     return (
       <div>
+        <Typography>{name}</Typography>
         {cards.map((card, index) => (
           <MyCard name={card.card.name} key={index} facedown={card.facedown} />
         ))}
-        <h3>{count}</h3>
+        <Typography>{count}</Typography>
       </div>
     );
   }
 }
 
-export default Dealer;
+export default Hand;

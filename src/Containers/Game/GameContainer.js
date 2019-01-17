@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Player from '../../Components/Player/Player';
-import Dealer from '../../Components/Dealer/Dealer';
+import Hand from '../../Components/Hand/Hand';
 import StartContainer from '../Start/StartContainer';
 import SnackBar from '@material-ui/core/Snackbar';
 import Deck from './../../Utilities/Deck';
@@ -262,10 +261,10 @@ class GameContainer extends Component {
       <div>
         <Typography variant="h3">BlackJack</Typography>
         {(!gameOver || deal) && (
-          <Dealer cards={dealerCards} count={dealerCount} />
+          <Hand cards={dealerCards} count={dealerCount} name="Dealer" />
         )}
         {(!gameOver || deal) && (
-          <Player cards={playerCards} count={playerCount} />
+          <Hand cards={playerCards} count={playerCount} name="Player" />
         )}
         {!gameOver && <Button onClick={this.handleHitButtonClick}>Hit</Button>}
         {!gameOver && (

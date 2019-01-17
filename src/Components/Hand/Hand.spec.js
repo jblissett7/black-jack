@@ -1,14 +1,14 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Dealer from './Dealer';
+import Hand from './Hand';
 import MyCard from './../MyCard/MyCard';
 
-describe('Dealer', () => {
+describe('Hand', () => {
   let wrapper;
   beforeEach(
     () =>
       (wrapper = shallow(
-        <Dealer
+        <Hand
           cards={[
             { card: { name: 'Ace of Clubs', value: 1 }, facedown: false },
             { card: { name: '3 of Clubs', value: 3 }, facedown: false },
