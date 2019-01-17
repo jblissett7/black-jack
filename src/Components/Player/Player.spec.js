@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Player from './Player';
-import Card from './../Card/Card';
+import MyCard from './../MyCard/MyCard';
 
 describe('Player', () => {
   let wrapper;
@@ -23,6 +23,6 @@ describe('Player', () => {
   });
 
   it('Should render at least one <Card />', () => {
-    expect(wrapper.containsMatchingElement(<Card />)).toEqual(true);
+    expect(wrapper.containsMatchingElement(<MyCard />)).toEqual(true);
   });
 });

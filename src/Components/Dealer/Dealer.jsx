@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Card from '../Card/Card';
+import MyCard from '../MyCard/MyCard';
 
 class Dealer extends Component {
   render() {
@@ -7,7 +7,7 @@ class Dealer extends Component {
     return (
       <div>
         {cards.map((card, index) => (
-          <Card name={card.card.name} key={index} facedown={card.facedown} />
+          <MyCard name={card.card.name} key={index} facedown={card.facedown} />
         ))}
         <h3>{count}</h3>
       </div>

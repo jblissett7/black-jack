@@ -23,6 +23,8 @@ class GameContainer extends Component {
       dealerCount: 0,
       playerCards: [{ card: '', facedown: false }],
       playerCount: 0,
+      totalGamesPlayed: 0,
+      gamesWon: 0,
     };
   }
 
@@ -56,11 +58,12 @@ class GameContainer extends Component {
   };
 
   handleHitButtonClick = () => {
-    let { deck, playerCards, playerCount } = this.state;
+    let { deck, playerCards, playerCount, totalGamesPlayed } = this.state;
     playerCards.push({ card: deck.dealCard() });
     playerCount = this.getCount(playerCards);
     // Player Busts
     if (playerCount > 21) {
+      totalGamesPlayed++;
       this.setState({
         playerCards,
         playerCount,
@@ -68,6 +71,7 @@ class GameContainer extends Component {
         open: true,
         deal: true,
         gameOver: true,
+        totalGamesPlayed,
       });
     } else {
       this.setState({
@@ -78,7 +82,33 @@ class GameContainer extends Component {
   };
 
   handleStandButtonClick = () => {
-    let { deck, dealerCards, dealerCount, wallet, betAmount } = this.state;
+    let {
+      deck,
+      dealerCards,
+      dealerCount,
+      playerCards,
+      playerCount,
+      wallet,
+      betAmount,
+      totalGamesPlayed,
+      gamesWon,
+    } = this.state;
+    // Check if player has BlackJack
+    if (playerCards.length === 2 && playerCount === 21) {
+      wallet += betAmount * 2.5;
+      totalGamesPlayed++;
+      gamesWon++;
+      this.setState({
+        wallet,
+        message: 'BlackJack!',
+        open: true,
+        deal: true,
+        gameOver: true,
+        totalGamesPlayed,
+        gamesWon,
+      });
+      return;
+    }
     // Flip dealer card and calculate the count
     dealerCards[0].facedown = false;
     dealerCount = this.getCount(dealerCards);
@@ -87,14 +117,11 @@ class GameContainer extends Component {
       dealerCards.push({ card: deck.dealCard() });
       dealerCount = this.getCount(dealerCards);
     }
-    /*this.setState({
-      dealerCards,
-      dealerCount,
-    });
-    */
 
     if (dealerCount > 21) {
       wallet += betAmount * 2;
+      totalGamesPlayed++;
+      gamesWon++;
       this.setState({
         dealerCards,
         dealerCount,
@@ -103,6 +130,8 @@ class GameContainer extends Component {
         open: true,
         deal: true,
         gameOver: true,
+        totalGamesPlayed,
+        gamesWon,
       });
     } else {
       this.getWinner(dealerCards, dealerCount, wallet, betAmount);
@@ -122,25 +151,13 @@ class GameContainer extends Component {
     dealerCount = this.getCount(dealerCards);
     playerCount = this.getCount(playerCards);
 
-    if (playerCount === 21) {
-      let { wallet, betAmount } = this.state;
-      wallet += betAmount * 2.5;
-      this.setState({
-        wallet,
-        message: 'BlackJack!',
-        open: true,
-        deal: true,
-        gameOver: true,
-      });
-    } else {
-      this.setState({
-        dealerCards,
-        playerCards,
-        dealerCount,
-        playerCount,
-        deal: false,
-      });
-    }
+    this.setState({
+      dealerCards,
+      playerCards,
+      dealerCount,
+      playerCount,
+      deal: false,
+    });
   };
 
   getCount = cards => {
@@ -173,9 +190,12 @@ class GameContainer extends Component {
   };
 
   getWinner = (dealerCards, dealerCount, wallet, betAmount) => {
-    const { playerCount } = this.state;
+    let { playerCount, totalGamesPlayed, gamesWon } = this.state;
     if (playerCount > dealerCount) {
+      // Add winnings to wallet
       wallet += betAmount * 2;
+      totalGamesPlayed++;
+      gamesWon++;
       this.setState({
         dealerCards,
         dealerCount,
@@ -184,8 +204,11 @@ class GameContainer extends Component {
         open: true,
         deal: true,
         gameOver: true,
+        totalGamesPlayed,
+        gamesWon,
       });
     } else if (dealerCount > playerCount) {
+      totalGamesPlayed++;
       this.setState({
         dealerCards,
         dealerCount,
@@ -193,9 +216,12 @@ class GameContainer extends Component {
         open: true,
         deal: true,
         gameOver: true,
+        totalGamesPlayed,
       });
     } else {
+      // Add bet amount back to wallet
       wallet = wallet + Number(betAmount);
+      totalGamesPlayed++;
       this.setState({
         dealerCards,
         dealerCount,
@@ -204,6 +230,7 @@ class GameContainer extends Component {
         open: true,
         deal: true,
         gameOver: true,
+        totalGamesPlayed,
       });
     }
   };
@@ -212,6 +239,7 @@ class GameContainer extends Component {
     let { dealerCards, playerCards } = this.state;
     dealerCards = [];
     playerCards = [];
+    // Return the cards instead of setting the state so it doesnt trigger a re render
     return { dealerCards, playerCards };
   };
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Card from './Card';
+import MyCard from './MyCard';
 
-describe('Card', () => {
+describe('MyCard', () => {
   let wrapper;
-  beforeEach(() => (wrapper = shallow(<Card />)));
+  beforeEach(() => (wrapper = shallow(<MyCard />)));
 
   it('Should render a <div />', () => {
     expect(wrapper.find('div').length).toEqual(1);
