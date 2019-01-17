@@ -10,7 +10,6 @@ class GameContainer extends Component {
     super(props);
 
     this.state = {
-      //hiddenDealerCard: [],
       dealerCards: [{ card: '', facedown: false }],
       dealerCount: 0,
       playerCards: [{ card: '', facedown: false }],
@@ -45,36 +44,17 @@ class GameContainer extends Component {
       dealerCount = this.getCount(dealerCards);
       console.log(dealerCount);
     }
-    this.setState(
-      {
-        dealerCards,
-        dealerCount,
-      },
-      this.checkDealerCount(dealerCount)
-    );
-  };
-
-  checkDealerCount = dealerCount => {
-    if (dealerCount > 21) {
-      this.props.onWinner('Player');
-    } else {
-      this.props.onWinner(this.getWinner());
-    }
-  };
-
-  /*flipHiddenCard = () => {
-    let { dealerCards, dealerCount, hiddenDealerCard } = this.state;
-    dealerCards.push(hiddenDealerCard);
-    console.log(hiddenDealerCard);
-    dealerCount = this.getCount(dealerCards);
-
     this.setState({
       dealerCards,
       dealerCount,
-      hiddenDealerCard: [],
     });
+
+    if (dealerCount > 21) {
+      this.props.onWinner('Player');
+    } else {
+      this.props.onWinner(this.getWinner(dealerCount));
+    }
   };
-  */
 
   startingDeal = () => {
     //let updatedDeck = this.state.deck;
@@ -101,6 +81,15 @@ class GameContainer extends Component {
       //hiddenDealerCard,
       dealerCount,
       playerCount,
+    });
+  };
+
+  clearCards = () => {
+    this.setState({
+      dealerCards: [],
+      playerCards: [],
+      dealerCount: 0,
+      playerCount: 0,
     });
   };
 
@@ -133,13 +122,16 @@ class GameContainer extends Component {
     return count;
   };
 
-  getWinner = () => {
-    const { playerCount, dealerCount } = this.state;
+  getWinner = dealerCount => {
+    const { playerCount } = this.state;
     if (playerCount > dealerCount) {
+      console.log('Player');
       return 'Player';
     } else if (dealerCount > playerCount) {
+      console.log('Dealer');
       return 'Dealer';
     } else {
+      console.log('Push');
       return 'Push';
     }
   };
@@ -150,8 +142,13 @@ class GameContainer extends Component {
   render() {
     const { dealerCards, playerCards, dealerCount, playerCount } = this.state;
     const { wallet } = this.props;
+    if (this.props.deal) {
+      this.clearCards();
+      this.startingDeal();
+    }
     return (
       <div>
+        <Typography variant="h3">BlackJack</Typography>
         <Dealer cards={dealerCards} count={dealerCount} />
         <Player cards={playerCards} count={playerCount} />
         <Button onClick={this.handleHitButtonClick}>Hit</Button>
