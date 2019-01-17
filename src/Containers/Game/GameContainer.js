@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Player from '../../Components/Player/Player';
 import Dealer from '../../Components/Dealer/Dealer';
+import StartContainer from '../Start/StartContainer';
+import SnackBar from '@material-ui/core/Snackbar';
 import Deck from './../../Utilities/Deck';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
@@ -10,6 +12,13 @@ class GameContainer extends Component {
     super(props);
 
     this.state = {
+      deck: new Deck().shuffle(),
+      deal: false,
+      wallet: 1000,
+      betAmount: null,
+      gameOver: true,
+      message: '',
+      open: false,
       dealerCards: [{ card: '', facedown: false }],
       dealerCount: 0,
       playerCards: [{ card: '', facedown: false }],
@@ -17,14 +26,49 @@ class GameContainer extends Component {
     };
   }
 
+  handleBetAmountChange = betAmount => {
+    this.setState({
+      betAmount,
+    });
+  };
+
+  handleBetClick = () => {
+    let { betAmount, wallet } = this.state;
+    if (betAmount > wallet) {
+      this.setState({
+        message: 'You do not have sufficent funds.',
+        open: true,
+      });
+    } else {
+      wallet = wallet - betAmount;
+      this.setState({
+        wallet,
+        gameOver: false,
+      });
+    }
+  };
+
+  handleClose = () => {
+    // Used to close SnackBar after 3 second timeout
+    this.setState({
+      open: false,
+    });
+  };
+
   handleHitButtonClick = () => {
-    let { deck } = this.props;
-    let { playerCards, playerCount } = this.state;
+    let { deck, playerCards, playerCount } = this.state;
     playerCards.push({ card: deck.dealCard() });
     playerCount = this.getCount(playerCards);
+    // Player Busts
     if (playerCount > 21) {
-      console.log('Bust');
-      this.props.onWinner('Dealer');
+      this.setState({
+        playerCards,
+        playerCount,
+        message: 'You Busted. Dealer wins.',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
     } else {
       this.setState({
         playerCards,
@@ -34,63 +78,69 @@ class GameContainer extends Component {
   };
 
   handleStandButtonClick = () => {
-    let { deck } = this.props;
-    let { dealerCards, dealerCount } = this.state;
+    let { deck, dealerCards, dealerCount, wallet, betAmount } = this.state;
+    // Flip dealer card and calculate the count
     dealerCards[0].facedown = false;
     dealerCount = this.getCount(dealerCards);
-    console.log(dealerCount);
+    // continue to draw cards until dealer count is atleast 17
     while (dealerCount < 17) {
       dealerCards.push({ card: deck.dealCard() });
       dealerCount = this.getCount(dealerCards);
-      console.log(dealerCount);
     }
-    this.setState({
+    /*this.setState({
       dealerCards,
       dealerCount,
     });
+    */
 
     if (dealerCount > 21) {
-      this.props.onWinner('Player');
+      wallet += betAmount * 2;
+      this.setState({
+        dealerCards,
+        dealerCount,
+        wallet,
+        message: 'Dealer Busts! You win!',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
     } else {
-      this.props.onWinner(this.getWinner(dealerCount));
+      this.getWinner(dealerCards, dealerCount, wallet, betAmount);
     }
   };
 
   startingDeal = () => {
-    //let updatedDeck = this.state.deck;
-    let { deck } = this.props;
-    let {
-      dealerCards,
-      playerCards,
-      dealerCount,
-      playerCount,
-      //hiddenDealerCard,
-    } = this.state;
-    //updatedDeck.shuffle();
+    let { deck, dealerCount, playerCount } = this.state;
+    if (deck.length < 10) {
+      deck = new Deck().shuffle();
+    }
+    let { dealerCards, playerCards } = this.clearCards();
     playerCards[0] = { card: deck.dealCard(), facedown: false };
     dealerCards[0] = { card: deck.dealCard(), facedown: true };
-    playerCards.push({ card: deck.dealCard() });
-    dealerCards.push({ card: deck.dealCard() });
+    playerCards[1] = { card: deck.dealCard() };
+    dealerCards[1] = { card: deck.dealCard() };
     dealerCount = this.getCount(dealerCards);
     playerCount = this.getCount(playerCards);
 
-    this.setState({
-      //deck: updatedDeck,
-      dealerCards,
-      playerCards,
-      //hiddenDealerCard,
-      dealerCount,
-      playerCount,
-    });
-  };
-
-  clearCards = () => {
-    this.setState({
-      dealerCards: [],
-      playerCards: [],
-      dealerCount: 0,
-      playerCount: 0,
-    });
+    if (playerCount === 21) {
+      let { wallet, betAmount } = this.state;
+      wallet += betAmount * 2.5;
+      this.setState({
+        wallet,
+        message: 'BlackJack!',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
+    } else {
+      this.setState({
+        dealerCards,
+        playerCards,
+        dealerCount,
+        playerCount,
+        deal: false,
+      });
+    }
   };
 
   getCount = cards => {
@@ -122,38 +172,99 @@ class GameContainer extends Component {
     return count;
   };
 
-  getWinner = dealerCount => {
+  getWinner = (dealerCards, dealerCount, wallet, betAmount) => {
     const { playerCount } = this.state;
     if (playerCount > dealerCount) {
-      console.log('Player');
-      return 'Player';
+      wallet += betAmount * 2;
+      this.setState({
+        dealerCards,
+        dealerCount,
+        wallet,
+        message: 'You Won!',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
     } else if (dealerCount > playerCount) {
-      console.log('Dealer');
-      return 'Dealer';
+      this.setState({
+        dealerCards,
+        dealerCount,
+        message: 'You Lost',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
     } else {
-      console.log('Push');
-      return 'Push';
+      wallet = wallet + Number(betAmount);
+      this.setState({
+        dealerCards,
+        dealerCount,
+        wallet,
+        message: 'Push',
+        open: true,
+        deal: true,
+        gameOver: true,
+      });
     }
+  };
+
+  clearCards = () => {
+    let { dealerCards, playerCards } = this.state;
+    dealerCards = [];
+    playerCards = [];
+    return { dealerCards, playerCards };
   };
 
   componentDidMount() {
     this.startingDeal();
   }
   render() {
-    const { dealerCards, playerCards, dealerCount, playerCount } = this.state;
-    const { wallet } = this.props;
-    if (this.props.deal) {
-      this.clearCards();
-      this.startingDeal();
-    }
+    const {
+      dealerCards,
+      playerCards,
+      dealerCount,
+      playerCount,
+      betAmount,
+      message,
+      wallet,
+      deal,
+      gameOver,
+    } = this.state;
     return (
       <div>
         <Typography variant="h3">BlackJack</Typography>
-        <Dealer cards={dealerCards} count={dealerCount} />
-        <Player cards={playerCards} count={playerCount} />
-        <Button onClick={this.handleHitButtonClick}>Hit</Button>
-        <Button onClick={this.handleStandButtonClick}>Stand</Button>
-        <Typography variant="h3">${wallet}</Typography>
+        {(!gameOver || deal) && (
+          <Dealer cards={dealerCards} count={dealerCount} />
+        )}
+        {(!gameOver || deal) && (
+          <Player cards={playerCards} count={playerCount} />
+        )}
+        {!gameOver && <Button onClick={this.handleHitButtonClick}>Hit</Button>}
+        {!gameOver && (
+          <Button onClick={this.handleStandButtonClick}>Stand</Button>
+        )}
+        {deal && <Button onClick={this.startingDeal}>Deal</Button>}
+        <Typography variant="h3">Wallet: ${wallet}</Typography>
+        {gameOver && !deal && (
+          <StartContainer
+            betAmount={betAmount}
+            onBetAmountChange={this.handleBetAmountChange}
+            onBetClick={this.handleBetClick}
+          />
+        )}
+        <SnackBar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={this.state.open}
+          autoHideDuration={3000}
+          onClose={this.handleClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{message}</span>}
+        />
       </div>
     );
   }

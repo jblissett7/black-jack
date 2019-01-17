@@ -1,30 +1,30 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import GameContainer from './GameContainer';
+import StartContainer from './../Start/StartContainer';
 import Dealer from '../../Components/Dealer/Dealer';
 import Player from '../../Components/Player/Player';
-import Deck from '../../Utilities/Deck';
 
-describe('GameContainer', () => {
+describe('GameContainer initial state', () => {
   let wrapper, shallow;
   beforeEach(() => {
     shallow = createShallow();
-    wrapper = shallow(<GameContainer deck={new Deck().shuffle()} />);
+    wrapper = shallow(<GameContainer />);
   });
 
   it('Should render a <div />', () => {
     expect(wrapper.find('div').length).toEqual(1);
   });
 
-  it('Should render a Dealer Component', () => {
+  it('Should not render a Dealer Component', () => {
     expect(
       wrapper.containsMatchingElement(
         <Dealer cards={wrapper.instance().state.dealerCards} />
       )
-    ).toEqual(true);
+    ).toEqual(false);
   });
 
-  it('Should render the Player Component', () => {
+  it('Should not render the Player Component', () => {
     expect(
       wrapper.containsMatchingElement(
         <Player
@@ -32,11 +32,15 @@ describe('GameContainer', () => {
           count={wrapper.instance().state.playerCount}
         />
       )
-    ).toEqual(true);
+    ).toEqual(false);
   });
 
-  it('Should render two buttons', () => {
-    expect(wrapper.find('WithStyles(Button)').length).toEqual(2);
+  it('Should render 0 buttons', () => {
+    expect(wrapper.find('WithStyles(Button)').length).toEqual(0);
+  });
+
+  it('Should render the StartContainer Component', () => {
+    expect(wrapper.containsMatchingElement(<StartContainer />)).toEqual(true);
   });
 
   it('Should deal two cards to the player and the dealer', () => {
@@ -45,16 +49,17 @@ describe('GameContainer', () => {
   });
 });
 
-describe('Mounted GameContainer Component', () => {
+/*describe('Mounted GameContainer Component', () => {
   let wrapper, mount;
   beforeEach(() => {
     mount = createMount();
     wrapper = mount(
-      <GameContainer deck={new Deck().shuffle()} onWinner={jest.fn()} />
+      <GameContainer />
     );
   });
 
   afterEach(() => mount.cleanUp());
+
 
   it('Calls handleHitButtonClick when hit button is pressed', () => {
     const spy = jest.spyOn(wrapper.instance(), 'handleHitButtonClick');
@@ -78,12 +83,13 @@ describe('Mounted GameContainer Component', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });
+*/
 
 describe('getCount', () => {
   let wrapper, shallow;
   beforeEach(() => {
     shallow = createShallow();
-    wrapper = shallow(<GameContainer deck={new Deck().shuffle()} />);
+    wrapper = shallow(<GameContainer />);
   });
 
   it('Should add up count with number cards', () => {
@@ -140,14 +146,26 @@ describe('HandleHitButtonClick', () => {
   let wrapper, shallow;
   beforeEach(() => {
     shallow = createShallow();
-    wrapper = shallow(
-      <GameContainer deck={new Deck().shuffle()} onWinner={jest.fn()} />
-    );
+    wrapper = shallow(<GameContainer />);
   });
 
   it('Should add a card to playerCards', () => {
     wrapper.instance().handleHitButtonClick();
     expect(wrapper.state('playerCards').length).toEqual(3);
+  });
+
+  it('Should end game if player busts', () => {
+    wrapper.setState({
+      playerCards: [
+        { card: { name: 'King', value: 10 }, facedown: false },
+        { card: { name: 'King', value: 10 }, facedown: false },
+      ],
+    });
+    wrapper.instance().handleHitButtonClick();
+    expect(wrapper.state('message')).toBe('You Busted. Dealer wins.');
+    expect(wrapper.state('open')).toBe(true);
+    expect(wrapper.state('deal')).toBe(true);
+    expect(wrapper.state('gameOver')).toBe(true);
   });
 });
 
@@ -155,25 +173,39 @@ describe('HandleStandButtonClick', () => {
   let wrapper, shallow;
   beforeEach(() => {
     shallow = createShallow();
-    wrapper = shallow(
-      <GameContainer deck={new Deck().shuffle()} onWinner={jest.fn()} />
-    );
+    wrapper = shallow(<GameContainer />);
   });
 
   it('Should not add a card to dealerCards if dealerCount is 17 or higher', () => {
-    wrapper.setState({ dealerCount: 17 });
+    wrapper.setState({
+      dealerCards: [
+        { card: { name: 'King', value: 10 }, facedown: false },
+        { card: { name: '7', value: 7 }, facedown: false },
+      ],
+    });
     wrapper.instance().handleStandButtonClick();
     expect(wrapper.state('dealerCards').length).toEqual(2);
   });
 
   it('Should correctly bust the dealer', () => {
-    wrapper.setState({ dealerCount: 22 });
+    wrapper.setState({
+      dealerCards: [
+        { card: { name: 'King', value: 10 }, facedown: false },
+        { card: { name: 'King', value: 10 }, facedown: false },
+        { card: { name: 'King', value: 10 }, facedown: false },
+      ],
+    });
     wrapper.instance().handleStandButtonClick();
-    //expect(wrapper.props('winner')).toBe('Player');
+    expect(wrapper.state('message')).toBe('Dealer Busts! You win!');
   });
 
   it('Should add a card to dealerCards', () => {
-    wrapper.setState({ dealerCount: 16 });
+    wrapper.setState({
+      dealerCards: [
+        { card: { name: 'King', value: 10 }, facedown: false },
+        { card: { name: '6', value: 6 }, facedown: false },
+      ],
+    });
     wrapper.instance().handleStandButtonClick();
     expect(wrapper.state('dealerCards').length).toBeGreaterThan(2);
   });
@@ -183,21 +215,62 @@ describe('getWinner', () => {
   let wrapper, shallow;
   beforeEach(() => {
     shallow = createShallow();
-    wrapper = shallow(<GameContainer deck={new Deck().shuffle()} />);
+    wrapper = shallow(<GameContainer />);
   });
 
   it('Should return player if player wins', () => {
-    wrapper.setState({ dealerCount: 18, playerCount: 20 });
-    expect(wrapper.instance().getWinner()).toBe('Player');
+    wrapper.setState({
+      playerCount: 20,
+    });
+    wrapper
+      .instance()
+      .getWinner(
+        [
+          { card: { name: 'King', value: 10 }, facedown: false },
+          { card: { name: 'King', value: 8 }, facedown: false },
+        ],
+        18,
+        900,
+        100
+      );
+    expect(wrapper.state('message')).toBe('You Won!');
+    expect(wrapper.state('wallet')).toBe(1100);
   });
 
   it('Should return dealer if dealer wins', () => {
-    wrapper.setState({ dealerCount: 20, playerCount: 18 });
-    expect(wrapper.instance().getWinner()).toBe('Dealer');
+    wrapper.setState({
+      playerCount: 20,
+    });
+    wrapper
+      .instance()
+      .getWinner(
+        [
+          { card: { name: 'King', value: 10 }, facedown: false },
+          { card: { name: 'King', value: 11 }, facedown: false },
+        ],
+        21,
+        900,
+        100
+      );
+    expect(wrapper.state('message')).toBe('You Lost');
   });
 
   it('Should return push if no one wins', () => {
-    wrapper.setState({ dealerCount: 20, playerCount: 20 });
-    expect(wrapper.instance().getWinner()).toBe('Push');
+    wrapper.setState({
+      playerCount: 20,
+    });
+    wrapper
+      .instance()
+      .getWinner(
+        [
+          { card: { name: 'King', value: 10 }, facedown: false },
+          { card: { name: 'King', value: 10 }, facedown: false },
+        ],
+        20,
+        900,
+        100
+      );
+    expect(wrapper.state('message')).toBe('Push');
+    expect(wrapper.state('wallet')).toBe(1000);
   });
 });
