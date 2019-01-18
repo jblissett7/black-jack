@@ -37,42 +37,6 @@ describe('GameContainer initial state', () => {
   });
 });
 
-/*describe('Mounted GameContainer Component', () => {
-  let wrapper, mount;
-  beforeEach(() => {
-    mount = createMount();
-    wrapper = mount(
-      <GameContainer />
-    );
-  });
-
-  afterEach(() => mount.cleanUp());
-
-
-  it('Calls handleHitButtonClick when hit button is pressed', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'handleHitButtonClick');
-    wrapper.instance().forceUpdate();
-    expect(spy).toHaveBeenCalledTimes(0);
-    wrapper
-      .find('Button')
-      .first()
-      .simulate('click');
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
-
-  it('Calls handleStandButtonClick when Stand button is pressed', () => {
-    const spy = jest.spyOn(wrapper.instance(), 'handleStandButtonClick');
-    wrapper.instance().forceUpdate();
-    expect(spy).toHaveBeenCalledTimes(0);
-    wrapper
-      .find('Button')
-      .last()
-      .simulate('click');
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
-});
-*/
-
 describe('getCount', () => {
   let wrapper, shallow;
   beforeEach(() => {
