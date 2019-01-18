@@ -256,6 +256,8 @@ class GameContainer extends Component {
       wallet,
       deal,
       gameOver,
+      totalGamesPlayed,
+      gamesWon,
     } = this.state;
     return (
       <div>
@@ -266,17 +268,29 @@ class GameContainer extends Component {
         {(!gameOver || deal) && (
           <Hand cards={playerCards} count={playerCount} name="Player" />
         )}
-        {!gameOver && <Button onClick={this.handleHitButtonClick}>Hit</Button>}
         {!gameOver && (
-          <Button onClick={this.handleStandButtonClick}>Stand</Button>
+          <Button variant="contained" onClick={this.handleHitButtonClick}>
+            Hit
+          </Button>
         )}
-        {deal && <Button onClick={this.startingDeal}>Deal</Button>}
-        <Typography variant="h3">Wallet: ${wallet}</Typography>
+        {!gameOver && (
+          <Button variant="contained" onClick={this.handleStandButtonClick}>
+            Stand
+          </Button>
+        )}
+        {deal && (
+          <Button variant="contained" onClick={this.startingDeal}>
+            Deal
+          </Button>
+        )}
+        <Typography variant="h4">Wallet: ${wallet}</Typography>
         {gameOver && !deal && (
           <StartContainer
             betAmount={betAmount}
             onBetAmountChange={this.handleBetAmountChange}
             onBetClick={this.handleBetClick}
+            totalGamesPlayed={totalGamesPlayed}
+            gamesWon={gamesWon}
           />
         )}
         <SnackBar

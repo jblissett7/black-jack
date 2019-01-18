@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 class StartContainer extends Component {
   handleChange = event => {
@@ -12,16 +13,22 @@ class StartContainer extends Component {
   };
 
   render() {
-    const { betAmount } = this.props;
+    const { betAmount, totalGamesPlayed, gamesWon } = this.props;
     return (
       <div>
+        <Typography>
+          Total number of games played: {totalGamesPlayed}
+        </Typography>
+        <Typography>Total number of games won: {gamesWon}</Typography>
         <TextField
           id="Bet Amount"
           label="Bet Amount"
           value={betAmount}
           onChange={this.handleChange}
         />
-        <Button onClick={this.handleClick}>Bet</Button>
+        <Button variant="contained" onClick={this.handleClick}>
+          Bet
+        </Button>
       </div>
     );
   }
