@@ -36,9 +36,16 @@ class GameContainer extends Component {
 
   handleBetClick = () => {
     let { betAmount, wallet } = this.state;
+    console.log(betAmount);
     if (betAmount > wallet) {
       this.setState({
         message: 'You do not have sufficent funds.',
+        open: true,
+      });
+      // Check to make sure betAmount is a number
+    } else if (isNaN(betAmount) || betAmount === ' ' || betAmount === null) {
+      this.setState({
+        message: 'Please enter a valid number.',
         open: true,
       });
     } else {
@@ -140,7 +147,7 @@ class GameContainer extends Component {
 
   startingDeal = () => {
     let { deck, dealerCount, playerCount } = this.state;
-    if (deck.length < 10) {
+    if (deck.deck.length < 15) {
       deck = new Deck().shuffle();
     }
     let { dealerCards, playerCards } = this.clearCards();
@@ -152,6 +159,7 @@ class GameContainer extends Component {
     playerCount = this.getCount(playerCards);
 
     this.setState({
+      deck,
       dealerCards,
       playerCards,
       dealerCount,
@@ -285,13 +293,18 @@ class GameContainer extends Component {
           {!gameOver && (
             <Grid container item justify="center" spacing={8}>
               <Grid item>
-                <Button variant="contained" onClick={this.handleHitButtonClick}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleHitButtonClick}
+                >
                   Hit
                 </Button>
               </Grid>
               <Grid item>
                 <Button
                   variant="contained"
+                  color="primary"
                   onClick={this.handleStandButtonClick}
                 >
                   Stand
@@ -301,7 +314,11 @@ class GameContainer extends Component {
           )}
           {deal && (
             <Grid container item justify="center">
-              <Button variant="contained" onClick={this.startingDeal}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.startingDeal}
+              >
                 Deal
               </Button>
             </Grid>

@@ -36,7 +36,11 @@ class StartContainer extends Component {
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={this.handleClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleClick}
+              >
                 Bet
               </Button>
             </Grid>

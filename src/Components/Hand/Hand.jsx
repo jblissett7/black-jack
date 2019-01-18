@@ -22,7 +22,7 @@ class Hand extends Component {
             </Grid>
           ))}
           <Grid container item justify="center">
-            <Typography variant="h5">{count}</Typography>
+            <Typography variant="h5">Score: {count}</Typography>
           </Grid>
         </Grid>
       </div>
