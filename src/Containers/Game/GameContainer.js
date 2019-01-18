@@ -5,6 +5,7 @@ import SnackBar from '@material-ui/core/Snackbar';
 import Deck from './../../Utilities/Deck';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 
 class GameContainer extends Component {
   constructor(props) {
@@ -261,51 +262,78 @@ class GameContainer extends Component {
     } = this.state;
     return (
       <div>
-        <Typography variant="h3">BlackJack</Typography>
-        {(!gameOver || deal) && (
-          <Hand cards={dealerCards} count={dealerCount} name="Dealer" />
-        )}
-        {(!gameOver || deal) && (
-          <Hand cards={playerCards} count={playerCount} name="Player" />
-        )}
-        {!gameOver && (
-          <Button variant="contained" onClick={this.handleHitButtonClick}>
-            Hit
-          </Button>
-        )}
-        {!gameOver && (
-          <Button variant="contained" onClick={this.handleStandButtonClick}>
-            Stand
-          </Button>
-        )}
-        {deal && (
-          <Button variant="contained" onClick={this.startingDeal}>
-            Deal
-          </Button>
-        )}
-        <Typography variant="h4">Wallet: ${wallet}</Typography>
-        {gameOver && !deal && (
-          <StartContainer
-            betAmount={betAmount}
-            onBetAmountChange={this.handleBetAmountChange}
-            onBetClick={this.handleBetClick}
-            totalGamesPlayed={totalGamesPlayed}
-            gamesWon={gamesWon}
+        <Grid container justify="center" spacing={8}>
+          <Grid container item justify="center">
+            <Typography variant="h3">BlackJack</Typography>
+          </Grid>
+          {(!gameOver || deal) && (
+            <Grid
+              container
+              item
+              justify="center"
+              direction="column"
+              spacing={8}
+            >
+              <Grid item>
+                <Hand cards={dealerCards} count={dealerCount} name="Dealer" />
+              </Grid>
+              <Grid item>
+                <Hand cards={playerCards} count={playerCount} name="Player" />
+              </Grid>
+            </Grid>
+          )}
+          {!gameOver && (
+            <Grid container item justify="center" spacing={8}>
+              <Grid item>
+                <Button variant="contained" onClick={this.handleHitButtonClick}>
+                  Hit
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  onClick={this.handleStandButtonClick}
+                >
+                  Stand
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+          {deal && (
+            <Grid container item justify="center">
+              <Button variant="contained" onClick={this.startingDeal}>
+                Deal
+              </Button>
+            </Grid>
+          )}
+          <Grid container item justify="center">
+            <Typography variant="h4">Wallet: ${wallet}</Typography>
+          </Grid>
+          {gameOver && !deal && (
+            <Grid container item justify="center">
+              <StartContainer
+                betAmount={betAmount}
+                onBetAmountChange={this.handleBetAmountChange}
+                onBetClick={this.handleBetClick}
+                totalGamesPlayed={totalGamesPlayed}
+                gamesWon={gamesWon}
+              />
+            </Grid>
+          )}
+          <SnackBar
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            open={this.state.open}
+            autoHideDuration={3000}
+            onClose={this.handleClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{message}</span>}
           />
-        )}
-        <SnackBar
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          open={this.state.open}
-          autoHideDuration={3000}
-          onClose={this.handleClose}
-          ContentProps={{
-            'aria-describedby': 'message-id',
-          }}
-          message={<span id="message-id">{message}</span>}
-        />
+        </Grid>
       </div>
     );
   }

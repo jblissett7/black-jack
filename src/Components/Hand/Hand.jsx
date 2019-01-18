@@ -8,11 +8,9 @@ class Hand extends Component {
     const { cards, count, name } = this.props;
     return (
       <div>
-        <Grid container spacing={8} justify="center">
-          <Grid container justify="center">
-            <Grid item>
-              <Typography variant="h5">{name}</Typography>
-            </Grid>
+        <Grid container justify="center" spacing={8}>
+          <Grid container item justify="center">
+            <Typography variant="h5">{name}</Typography>
           </Grid>
           {cards.map((card, index) => (
             <Grid item>
@@ -23,10 +21,8 @@ class Hand extends Component {
               />
             </Grid>
           ))}
-          <Grid container justify="center">
-            <Grid item>
-              <Typography variant="h5">{count}</Typography>
-            </Grid>
+          <Grid container item justify="center">
+            <Typography variant="h5">{count}</Typography>
           </Grid>
         </Grid>
       </div>

@@ -2,8 +2,7 @@ import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import GameContainer from './GameContainer';
 import StartContainer from './../Start/StartContainer';
-import Dealer from '../../Components/Dealer/Dealer';
-import Player from '../../Components/Player/Player';
+import Hand from '../../Components/Hand/Hand';
 
 describe('GameContainer initial state', () => {
   let wrapper, shallow;
@@ -16,21 +15,10 @@ describe('GameContainer initial state', () => {
     expect(wrapper.find('div').length).toEqual(1);
   });
 
-  it('Should not render a Dealer Component', () => {
+  it('Should not render a Hand Component', () => {
     expect(
       wrapper.containsMatchingElement(
-        <Dealer cards={wrapper.instance().state.dealerCards} />
-      )
-    ).toEqual(false);
-  });
-
-  it('Should not render the Player Component', () => {
-    expect(
-      wrapper.containsMatchingElement(
-        <Player
-          cards={wrapper.instance().state.playerCards}
-          count={wrapper.instance().state.playerCount}
-        />
+        <Hand cards={wrapper.instance().state.dealerCards} />
       )
     ).toEqual(false);
   });
