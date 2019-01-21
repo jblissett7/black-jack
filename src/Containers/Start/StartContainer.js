@@ -14,17 +14,18 @@ class StartContainer extends Component {
   };
 
   render() {
-    const { betAmount, totalGamesPlayed, gamesWon } = this.props;
+    const { betAmount, totalGamesPlayed, gamesWon, blackJacks } = this.props;
     return (
       <div>
         <Grid container justify="center" spacing={8}>
           <Grid container item justify="center">
-            <Typography>
-              Total number of games played: {totalGamesPlayed}
-            </Typography>
+            <Typography>Games played: {totalGamesPlayed}</Typography>
           </Grid>
           <Grid container item justify="center">
-            <Typography>Total number of games won: {gamesWon}</Typography>
+            <Typography>Games won: {gamesWon}</Typography>
+          </Grid>
+          <Grid container item justify="center">
+            <Typography>BlackJacks won: {blackJacks}</Typography>
           </Grid>
           <Grid container item justify="center" alignItems="center" spacing={8}>
             <Grid item>

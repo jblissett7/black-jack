@@ -16,6 +16,7 @@ class GameContainer extends Component {
       deal: false,
       wallet: 1000,
       betAmount: null,
+      blackJacks: 0,
       gameOver: true,
       message: '',
       open: false,
@@ -45,7 +46,7 @@ class GameContainer extends Component {
       // Check to make sure betAmount is a number
     } else if (isNaN(betAmount) || betAmount === ' ' || betAmount === null) {
       this.setState({
-        message: 'Please enter a valid number.',
+        message: 'Please enter a dollar amount.',
         open: true,
       });
     } else {
@@ -98,12 +99,14 @@ class GameContainer extends Component {
       wallet,
       betAmount,
       totalGamesPlayed,
+      blackJacks,
       gamesWon,
     } = this.state;
     // Check if player has BlackJack
     if (playerCards.length === 2 && playerCount === 21) {
       wallet += betAmount * 2.5;
       totalGamesPlayed++;
+      blackJacks++;
       gamesWon++;
       this.setState({
         wallet,
@@ -112,6 +115,7 @@ class GameContainer extends Component {
         deal: true,
         gameOver: true,
         totalGamesPlayed,
+        blackJacks,
         gamesWon,
       });
       return;
@@ -266,6 +270,7 @@ class GameContainer extends Component {
       deal,
       gameOver,
       totalGamesPlayed,
+      blackJacks,
       gamesWon,
     } = this.state;
     return (
@@ -333,6 +338,7 @@ class GameContainer extends Component {
                 onBetAmountChange={this.handleBetAmountChange}
                 onBetClick={this.handleBetClick}
                 totalGamesPlayed={totalGamesPlayed}
+                blackJacks={blackJacks}
                 gamesWon={gamesWon}
               />
             </Grid>
