@@ -1,5 +1,5 @@
 import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 import GameContainer from './GameContainer';
 import StartContainer from './../Start/StartContainer';
 import Hand from '../../Components/Hand/Hand';

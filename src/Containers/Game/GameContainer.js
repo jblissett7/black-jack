@@ -37,12 +37,20 @@ class GameContainer extends Component {
 
   handleBetClick = () => {
     let { betAmount, wallet } = this.state;
-    console.log(betAmount);
     if (betAmount > wallet) {
-      this.setState({
-        message: 'You do not have sufficent funds.',
-        open: true,
-      });
+      if (wallet === 0) {
+        // Restart game.
+        this.setState({
+          wallet: 1000,
+          message: 'You ran out of money. Restarting game.',
+          open: true,
+        });
+      } else {
+        this.setState({
+          message: 'You do not have sufficent funds.',
+          open: true,
+        });
+      }
       // Check to make sure betAmount is a number
     } else if (isNaN(betAmount) || betAmount === ' ' || betAmount === null) {
       this.setState({
