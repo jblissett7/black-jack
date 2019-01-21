@@ -1,4 +1,4 @@
-BlackJack Game:
+### BlackJack Game:
 
 How to run:
 
@@ -8,8 +8,8 @@ Requirements:
 Steps:
 
   Clone the Repo.
-  yarn install
-  yarn start
+  ### `yarn install`
+  ### `yarn start`
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
